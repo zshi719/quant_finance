@@ -1,0 +1,69 @@
+sigs = pd. read_excel (data_file_path, sheet_name='signals' )
+sigs. set_ index ('Date', inplace=True)
+sigs
+
+# lag the independent variable, so that we can align date stamps and still have lag
+Sigs_ lag = sigs. shift() .dropna()
+# align the data frames to the same subset of dates
+sigs_lag, spy = sigs_lag.align(rets[['spy']], join=" inner',axis=0)
+
+
+forecasts = rets.SPY.expanding().mean().shift(1).dropna()
+forecasts.columns = ['Mean']
+
+# Define the models for the other forecasts
+model_map = {'DP':['DP']，'EP':['EP'], 'ALL':sigs.columns}
+
+for model in mode l_map. keys():
+	X = sigs_lag[model_map[model]]
+	forecasts[model]= LinearRegression().fit(X, SPY).predict(X) # lagged signals
+	forecasts.dropna(inplace=True)
+
+forecasts
+
+fig, ax = plt.subplots(figsize=(12,6))
+forecasts.plot (ax=ax)
+plt. legend (plot_data.columns)
+plt.title( 'Forecasted Return'
+plt.ylim(-.005,.03)
+plt. show()
+
+
+wts = 100* forecasts
+fund_returns = wts * spy.values
+fund_returns.insert(0, "Passive" , SPY)
+fund_returns
+
+# Assess the Active Performance
+print('Correlat ion of funds performances:" ）
+fund_ returns. corr().style. format("f:,.18}" .format)
+
+fund_returns + 1).cumprod( ).plot(figsize=(10,5), title='Cumulative Returns aMark Hendigs Cumulative Returns of Strategies)
+
+
+corr_rolling = fund_returns. rolling (50).corr()
+dynamic_ corrs = (corr_rolling['Passive'].unstack(1))
+dynamic_corrs = dynamic_corrs. reindex (columns=fund_returns.columns).drop('Passive')
+dynamic_corrs.plot(figsize=(10,5),title=’ correlation to sPy");
+performanceMetrics(fund_returns, annualizat ion=12).style. format("{:,.29}".format)
+
+tailMetrics( fund_returns) .style . format ({
+	Skewness":'6:.2千}’，
+	’Kurtosis':'{:.2f1
+	VaR (0.05)":"{：.2+}
+	•CVaR (0.05)1:4:.243'
+	nape Dradowni. rg:.2f3',
+	Peak':'{:9Y-9m}‘
+	"Bottom'："{：%Y-9m}
+Recoveri: 'g:gy-gny!
+}
+get_ols_metrics(spy, fund_returns, annualization=12) .style. format({
+	'alpha": ’{:,.28}'.format,
+	'SPY':“{:,.2f}".format,
+	'r-squared': '{:,.2%}".format,
+	'Treynor Ratio ' : "{:.2十}1,
+	'Info Ratio': "{:,.29}".format,
+	
+tab2000 = (fund_returns['2000':'2011'J+1)•cumprod()
+tab2000['RF'J = (rfI'2000':'2011'1+1).cumprod ()
+tab2000.plot(figsize=(10,5),title="Stock Unde rperformance?• );
